@@ -1,0 +1,4 @@
+interface:
+  display_name: "Latin-Script Book Typography"
+  short_description: "Refine book typography while preserving body specifications"
+  default_prompt: "Use $latin-book-typography to review this book's typography, preserving its content and my approved body specifications."
