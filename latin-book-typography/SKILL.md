@@ -2,14 +2,14 @@
 name: latin-book-typography
 description: "Refine Latin-script book and print-document typography using the user's house rules: locked body specifications, continuous text flow, no widows or orphans, contextual punctuation cleanup, and optical letter spacing. Use for English book typesetting, InDesign typography, rivers, tracking, kerning, or paragraph-break repair. Not a prose-editing skill; Chinese and other non-Latin typography require separate guidance."
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
 ---
 
 # Latin-Script Book Typography
 
 These rules define the user's house style, not universal standards for every font or publication. The latest explicit task requirements take precedence. Determine whether the user requests review, editing, or a pause: review only reports findings; a pause makes no document changes. Installing or discussing this skill does not resume manuscript editing.
 
-Maintain this single skill in place as the user adds or revises rules in Chinese or English. Incorporate revisions into the relevant sections rather than creating duplicate skills. Keep skill instructions, supporting references, interface metadata, and user-facing responses in English. Preserve the language of manuscript content and quoted source passages.
+Maintain this single skill in place as the user adds or revises rules in any language. Incorporate revisions into the relevant sections rather than creating duplicate skills. Keep skill instructions, supporting references, and interface metadata in English, and user-facing responses in the user's language. Preserve the language of manuscript content and quoted source passages.
 
 ## Project purpose and paragraph alignment
 
