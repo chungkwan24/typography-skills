@@ -1,0 +1,4 @@
+.venv/
+runtime/
+plugin/config.js
+__pycache__/
