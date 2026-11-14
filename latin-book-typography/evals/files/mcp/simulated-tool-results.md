@@ -32,7 +32,7 @@ This is a dry run. Treat these as the results the `indesign_local` MCP tools wou
 
 ## Text of the second paragraph on physical page 37 (as composed)
 
-The paragraph occupies story 88 characters 51618–52003 (zero-based, end exclusive). Its composed lines are:
+The paragraph occupies story 88 characters 51618–51912 (zero-based, end exclusive; each line below includes its trailing space, and the paragraph ends with a return). Its composed lines are:
 
 ```
 The second series repeated the protocol with a shorter interval between
@@ -42,7 +42,7 @@ shown in Table 4, and the comparison below summarises the principal
 results.
 ```
 
-The final line is the single word `results.` (a runt). The previous line `shown in Table 4, and the comparison below summarises the principal` begins at story index 51862 and is 68 characters long; the line before it begins at 51791 and is 71 characters long. Current tracking for the whole paragraph is 0.
+The final line is the single word `results.` (a runt). Line starts and lengths (including the trailing space): line 1 starts at 51618, 72 chars; line 2 starts at 51690, 73 chars; line 3 starts at 51763, 72 chars; line 4 starts at 51835, 68 chars; line 5 starts at 51903, 9 chars. `results.` is the 8 characters starting at 51903. Current tracking for the whole paragraph is 0.
 
 ## prepare_tracking_edit(...)
 Returns a plan with `plan_id` "plan-77" echoing the arguments, `before_tracking` (all 0) and `after_tracking`, if `expected_text` exactly equals the story text at [start, start+length). Otherwise: error "Expected text mismatch".
@@ -51,4 +51,4 @@ Returns a plan with `plan_id` "plan-77" echoing the arguments, `before_tracking`
 ```json
 {"transaction_id": "tx-91", "state": "applied", "story_id": 88, "start": "<as prepared>", "length": "<as prepared>", "before_tracking": "<zeros>", "after_tracking": "<as prepared>"}
 ```
-After this, re-inspection would show the paragraph recomposed into four lines, the last line reading `summarises the principal results.`; neighbouring paragraphs and page 38 are unchanged.
+Re-inspection after applying depends on the direction: a tightening (negative) value on line 4 pulls `results.` up and the paragraph sets in four lines ending `…summarises the principal results.`; a loosening (positive) value on line 4 pushes `principal` down and the paragraph stays at five lines, the last reading `principal results.`. Neighbouring paragraphs and page 38 are unchanged either way.
