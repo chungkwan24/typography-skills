@@ -61,10 +61,16 @@ var oldInteraction=app.scriptPreferences.userInteractionLevel;
 try {
     writeStatus('RUNNING');
     if(app.documents.length===0) throw Error('No open document');
-    var doc=app.activeDocument;
-    if(!doc.saved || File(doc.fullName).fsName!==File(cfg.expectedDocument).fsName)
-        throw Error('Active document path does not match expected document');
+    // Match the open document by its saved full path; it need not be the active window.
+    var doc=null, wanted=File(cfg.expectedDocument).fsName, n;
+    for(n=0;n<app.documents.length;n++) {
+        var d=app.documents[n];
+        if(d.saved && File(d.fullName).fsName===wanted) { doc=d; break; }
+    }
+    if(!doc) throw Error('Expected document is not open (or not saved at that path)');
     app.scriptPreferences.measurementUnit=MeasurementUnits.POINTS;
+    // Suppress modal dialogs so a job cannot sit blocked on an alert; restored in finally.
+    app.scriptPreferences.userInteractionLevel=UserInteractionLevels.NEVER_INTERACT;
     // Payload is an expression evaluating to function(doc, job, helpers).
     // It must not save, close or export unless the current user task authorizes it.
     var run=$.evalFile(File(cfg.payload));
@@ -83,7 +89,7 @@ try {
 })();
 '''
     (job / 'run.jsx').write_text(wrapper, encoding='ascii')
-    launcher = job / 'Codex_Run_Job.jsx'
+    launcher = job / 'Run_InDesign_Job.jsx'
     launcher.write_text('#target indesign\n$.evalFile(File('+literal(job/'run.jsx')+'));\n', encoding='ascii')
     return {**config, 'runScript': str(job/'run.jsx'), 'panelLauncher': str(launcher)}
 

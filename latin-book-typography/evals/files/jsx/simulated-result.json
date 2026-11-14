@@ -1,0 +1,23 @@
+{
+  "_note": "Pretend InDesign ran the inspect_document.jsx job and wrote this result.json, with status.json state COMPLETE. Fictional fixture; frames abridged to chapter openings.",
+  "name": "Atlas.indd",
+  "modified": false,
+  "version": "21.2.0.30",
+  "facingPages": true,
+  "pages": [
+    {"physical": 1, "label": "i", "side": "RIGHT_HAND", "frames": [{"id": 11, "storyId": 21, "preview": "ATLAS OF SMALL RIVERS"}]},
+    {"physical": 3, "label": "iii", "side": "RIGHT_HAND", "frames": [{"id": 13, "storyId": 23, "preview": "Contents"}]},
+    {"physical": 5, "label": "v", "side": "RIGHT_HAND", "frames": [{"id": 15, "storyId": 25, "preview": "Foreword"}]},
+    {"physical": 9, "label": "1", "side": "RIGHT_HAND", "frames": [{"id": 31, "storyId": 40, "preview": "Chapter 1\rHeadwaters"}]},
+    {"physical": 22, "label": "14", "side": "LEFT_HAND", "frames": [{"id": 52, "storyId": 40, "preview": "valley floor.\r"}]},
+    {"physical": 23, "label": "15", "side": "RIGHT_HAND", "frames": [{"id": 53, "storyId": 40, "preview": "Chapter 2\rMeanders"}]},
+    {"physical": 40, "label": "32", "side": "LEFT_HAND", "frames": [{"id": 70, "storyId": 40, "preview": "Chapter 3\rConfluences"}]},
+    {"physical": 57, "label": "49", "side": "RIGHT_HAND", "frames": [{"id": 87, "storyId": 40, "preview": "Chapter 4\rDeltas"}]}
+  ],
+  "sections": [
+    {"physical": 1, "start": 1, "continueNumbering": false, "style": "LOWER_ROMAN", "prefix": ""},
+    {"physical": 9, "start": 1, "continueNumbering": false, "style": "ARABIC", "prefix": ""}
+  ],
+  "oversetStories": [],
+  "links": []
+}

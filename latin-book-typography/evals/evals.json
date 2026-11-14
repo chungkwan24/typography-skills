@@ -1,0 +1,73 @@
+{
+  "skill_name": "latin-book-typography",
+  "evals": [
+    {
+      "id": 1,
+      "name": "review-only-novel",
+      "prompt": "帮我检查一下这本英文小说 Harbour_Lights.indd 的排版，要印刷成书。先只检查，不要改文件。InDesign 的检查结果和几段文字在附件里：evals/files/review/inspection.json 和 evals/files/review/excerpts.md。",
+      "expected_output": "A Chinese-language review report only (no edits). Asks the academic-vs-aesthetic purpose question rather than inferring it from 'novel'. Flags: chapter Three starting on a left page (physical 10, LEFT_HAND) and Two on physical 8 LEFT_HAND in a facing-page print book; single Arabic section with manually typed roman folios (iii/iv frames); overset story 415 on physical page 9; accidental leading spaces (Excerpt A); straight quotes used as quotation marks (Excerpt B/D) while preserving 5'11\" as a measurement; the runt 'sea.' (Excerpt B); the per-line paragraph marks in Excerpt C (5 marks, a clear pattern) as a repair candidate; notes LINK_EMBEDDED is not missing. Records locations. Does not claim widow/runt absence from inspection alone.",
+      "files": [
+        "evals/files/review/inspection.json",
+        "evals/files/review/excerpts.md"
+      ],
+      "assertions": [
+        "Reply to the user is in Chinese",
+        "Makes no document edits and does not claim any (review only)",
+        "Asks whether this is academic final typesetting or an aesthetically focused layout instead of inferring it from 'novel'",
+        "Flags the single Arabic section with manually typed roman folios (iii, iv) as a section-numbering problem",
+        "Flags overset text in story 415 on page 9",
+        "Flags the accidental leading spaces at the start of the Foreword paragraph (Excerpt A)",
+        "Flags straight quotes used as quotation marks AND treats 5'11\" as a measurement to preserve",
+        "Flags the one-word final line 'sea.' as a runt (Excerpt B)",
+        "Identifies the per-line paragraph marks in Excerpt C as PDF-paste breaks, states how many it counts as erroneous, and applies the matching rule (1-3: ask first; 4+ clear pattern: repair within scope) consistently with that count",
+        "Addresses the chapter openings on left-hand pages (Two at physical 8, Three at physical 10) or explicitly raises the right-page-start convention decision for this novel",
+        "Does not report the LINK_EMBEDDED image as missing",
+        "Does not claim the whole book is free of widows/orphans/rivers/runts; states the review's scope limits"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "mcp-runt-tracking-no-save",
+      "prompt": "InDesign MCP 已经连好了（indesign_local）。我的论文 Thesis_Final.indd 印刷页码第 23 页，第二段最后一行只剩一个单词 results.，帮我用字距收一下。改完先别保存，我要自己看。模拟的工具返回结果在 evals/files/mcp/simulated-tool-results.md。",
+      "expected_output": "A step-by-step tool-call log with exact arguments, then a Chinese reply. Starts with get_connection_status, list_documents, and picks document id 3 'Thesis_Final.indd' (not the modified copy id 5), confirming identity. Maps printed folio 23 to physical page 37 for list_text_frames. Uses prepare_tracking_edit on a bounded range (<=128 chars) of the last line(s) with exact expected_text and a small negative tracking value, then apply_prepared_edit, then re-inspects composition/neighbours. Does not call save_document. Mentions restore_edit/transaction tx-91 is conditional restoration, not native Undo.",
+      "files": [
+        "evals/files/mcp/simulated-tool-results.md"
+      ],
+      "assertions": [
+        "Calls get_connection_status and list_documents before any edit",
+        "Targets document id 3 'Thesis_Final.indd' (not the modified copy id 5) with matching expected_name",
+        "Uses physical_page=37 for printed folio 23",
+        "prepare_tracking_edit targets story 88 with length <= 128 characters inside the paragraph's last lines and supplies expected_text",
+        "Tracking value is a small adjustment (absolute value 1-30, tightening or loosening), not an extreme value",
+        "Calls apply_prepared_edit with the prepared plan_id only after prepare_tracking_edit",
+        "Checks the recomposed result after applying (runt gone, neighbouring lines/page 38 unchanged)",
+        "Does not call save_document and tells the user the change is unsaved",
+        "Reply to the user is in Chinese",
+        "Does not describe restore_edit as native InDesign Undo"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "jsx-fallback-recto-check",
+      "prompt": "我没装那个 InDesign MCP，也不想现在装。Mac 上的 InDesign 2026 已经打开了 Atlas.indd（已保存，路径是 evals/files/jsx/Atlas.indd）。这本书要印刷，双页对开，学术类。帮我检查每章第一页是不是都在右页。",
+      "expected_output": "Uses the JSX route: runs scripts/prepare_indesign_job.py with scripts/inspect_document.jsx and the document path, job root under a project work directory; shows the osascript/AppleScript (do script ... language javascript) or Scripts-panel route with the generated run.jsx/launcher path but does not execute it in this dry run; does not run setup.py or try to install MCP. After reading the simulated COMPLETE result, reports chapter 3 (physical 40, label 32) on LEFT_HAND as the violation, judged by page.side not page number; chapters 1, 2, 4 pass. Proposes inserting a blank left-hand page before chapter 3 but does not change the document (only a check was requested) and notes subsequent starts/pagination/TOC need rechecking after any insertion.",
+      "files": [
+        "evals/files/jsx/Atlas.indd",
+        "evals/files/jsx/simulated-result.json"
+      ],
+      "assertions": [
+        "Runs scripts/prepare_indesign_job.py with scripts/inspect_document.jsx and the Atlas.indd path, job root under outputs/work",
+        "Does not execute osascript/AppleScript or install into the Scripts panel (marks them NOT RUN)",
+        "Does not run setup.py or attempt to install/configure MCP",
+        "Reads the job status/result before reporting the check outcome",
+        "Identifies Chapter 3 (physical 40, label 32) as starting on a left-hand page",
+        "Reports Chapters 1, 2 and 4 as starting on right-hand pages",
+        "Judges right/left by page side, explicitly not by page-number parity",
+        "Also checks the title page, contents and foreword starts",
+        "Proposes inserting a blank left-hand page before Chapter 3 but makes no document change",
+        "Notes that after an insertion later starts, pagination/sections and the table of contents must be rechecked",
+        "Reply to the user is in Chinese"
+      ]
+    }
+  ]
+}

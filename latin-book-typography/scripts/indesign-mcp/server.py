@@ -1,10 +1,11 @@
 """Controlled stdio MCP -> authenticated private mailbox -> InDesign UXP."""
-import asyncio, json, secrets, threading, time, uuid, fcntl
+import asyncio, json, os, secrets, threading, time, uuid, fcntl
 from pathlib import Path
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 ROOT=Path(__file__).resolve().parent
-RUNTIME=ROOT/'runtime'
+# setup.py --home stores pairing outside the installed skill; the client config passes it here.
+RUNTIME=Path(os.environ.get('INDESIGN_MCP_HOME') or ROOT)/'runtime'
 mcp=FastMCP('InDesign Local Bridge')
 
 class Bridge:
@@ -76,6 +77,8 @@ async def inspect_document(document_id:int, expected_name:str) -> dict:
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False))
 async def list_text_frames(document_id:int, expected_name:str, physical_page:int) -> dict:
     """Read frame/story IDs and bounded previews on one physical page (cover=1)."""
+    if isinstance(document_id,bool) or document_id<=0 or not expected_name:raise ValueError('Provide document ID and expected name')
+    if isinstance(physical_page,bool) or physical_page<1:raise ValueError('physical_page is 1-based physical order (cover=1)')
     return await asyncio.to_thread(bridge.call,'list_text_frames',locals())
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False))
@@ -138,13 +141,13 @@ def acquire_lock():
 
 def main():
     global bridge
-    RUNTIME.mkdir(exist_ok=True)
+    RUNTIME.mkdir(parents=True,exist_ok=True)
     lock=acquire_lock()  # Keep descriptor alive until this server exits.
     token_path=RUNTIME/'token'
-    if not token_path.exists():raise SystemExit('Run setup.py first')
+    if not token_path.exists():raise SystemExit('No pairing token in '+str(RUNTIME)+'; run setup.py first (with the same --home)')
     bridge=Bridge(token_path.read_text().strip())
     config=RUNTIME/'mailbox-path'
-    if not config.exists():raise SystemExit('Set runtime/mailbox-path to the UXP private data directory')
+    if not config.exists():raise SystemExit('No mailbox path in '+str(RUNTIME)+'; run setup.py --mailbox <getDataFolder nativePath>')
     folder=Path(config.read_text().strip())
     if not folder.is_dir():raise SystemExit('UXP private mailbox directory does not exist')
     # Remove only stale bridge-owned command/result files before serving this session.
