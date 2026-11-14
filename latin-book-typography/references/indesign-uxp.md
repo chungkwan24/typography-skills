@@ -48,9 +48,9 @@ The controlled opener refuses to run while another document is open. The closer 
 
 ## Evidence and limits
 
-A single successful cycle on macOS, InDesign 21.2.0.30, used native `document.close(SaveOptions.NO)` followed by `app.open(absolutePathString)` in a later invocation. Mindology_TEST.indd reopened with 41 pages, 3 sections, six fonts INSTALLED, modified=false, and the same pre-existing overset story. The application stayed responsive. This is not a long-term stability guarantee or Windows validation.
+A single successful cycle on macOS, InDesign 21.2.0.30, used native `document.close(SaveOptions.NO)` followed by `app.open(absolutePathString)` in a later invocation. The test book reopened with 41 pages, 3 sections, six fonts INSTALLED, modified=false, and the same pre-existing overset story. The application stayed responsive. This is not a long-term stability guarantee or Windows validation.
 
-Earlier file-entry close/open attempts hung the host. The file picker also sometimes kept its Open button disabled; do not retry it indefinitely. `await document.fullName` rejected even after file selection. Therefore the bridge does not promise automatic native-path discovery. The path supplied to openPath is reported as caller-supplied evidence, not a successful fullName lookup. No full filesystem or network permission is requested by the plugin.
+Earlier file-entry close/open attempts hung the host. The file picker also sometimes kept its Open button disabled; do not retry it indefinitely. `await document.fullName` rejected even after file selection. Therefore the bridge does not promise automatic native-path discovery. The path supplied to openPath is reported as caller-supplied evidence, not a successful fullName lookup. The manifest declares `localFileSystem: "request"` (user-confirmed file pickers only), not full filesystem access, and no network permission. `openPath` itself passes a path string to `app.open` and does not use the picker.
 
 Direct UXP tracking edits worked, and restoring recorded values worked. `app.undo()` failed both after direct debugger edits and after a separate UXPSCRIPT/ENTIRE_SCRIPT transaction. Do not promise native undo or use this helper as a general editing transaction engine. Build explicit restoration and save checkpoints for authorized future edits; the bridge itself contains no editing operations.
 
@@ -60,7 +60,7 @@ A host error or loss of response is not completion. Stop issuing mutations and q
 
 ## Font validation lesson
 
-An INSTALLED font status in UXP did not prove every text/style reference was valid: native preflight still reported missing Italic instances. In that project, official local Source Serif 4 Regular/Italic OTF files plus native **Find/Replace Font → Change All → Redefine Style When Changing All** cleared the remaining font references. This is a project observation, not permission to replace fonts in other books. Preserve face/style choices and authorized emphasis; verify native Missing Fonts=0, save only when authorized, and recheck after opening. A substitute-font rendering is not valid typography QA.
+An INSTALLED font status in UXP did not prove every text/style reference was valid: native preflight still reported missing Italic instances. In one project, installing the official OTF files of the same family and faces, then native **Find/Replace Font → Change All → Redefine Style When Changing All**, cleared the remaining references. This is a project observation, not permission to replace fonts in other books. Preserve face/style choices and authorized emphasis; verify native Missing Fonts=0, save only when authorized, and recheck after opening. A substitute-font rendering is not valid typography QA.
 
 ## Official references
 

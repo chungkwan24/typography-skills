@@ -41,18 +41,18 @@ end timeout
 
 A timeout does not mean InDesign stopped executing. Inspect the job and application before any retry. If cross-application execution is restricted, use the Scripts panel rather than repeatedly retrying Apple events.
 
-**Scripts panel:** This fallback was used successfully for the book project.
+**Scripts panel:** This fallback has worked in a live project when Apple events were restricted.
 
 1. Open Window → Utilities → Scripts. Right-click User → Reveal in Finder to locate the actual Scripts Panel directory; do not assume its version or locale.
-2. Copy the generated `Codex_Run_Job.jsx` launcher there. Confirm the previous job has ended before replacing an existing launcher. Filesystem installation permissions are separate from document-editing authorization.
+2. Copy the generated `Run_InDesign_Job.jsx` launcher there. Confirm the previous job has ended before replacing an existing launcher. Filesystem installation permissions are separate from document-editing authorization.
 3. Connect to the intended InDesign application, get fresh UI state, and double-click the launcher once. Use the menu if a shortcut is unavailable; never rely on old accessibility indices.
 4. Read that job's status and result. A successful UI click alone is not task completion.
 
-A previous project used a fixed `Codex_Mindology_Work.jsx` launcher pointing to `work/sample/native-current.jsx`. Do not copy its user-specific absolute path into new projects. Unique job directories replace that mutable shared-payload pattern.
+Do not use one fixed launcher that points at a shared, mutable payload file (an earlier project did): unique job directories replace that pattern, and its absolute paths must never be copied into new projects.
 
 ## Status, guards, and recovery
 
-The wrapper verifies the active document's full path, temporarily selects point units, executes the payload, writes JSON results, and restores script measurement and interaction preferences. It does not activate another document, save, close, or export automatically.
+The wrapper finds the open document whose saved full path matches the job (it need not be the active window), temporarily selects point units and suppresses modal dialogs (`NEVER_INTERACT`), executes the payload with that document as `doc`, writes JSON results, and restores both preferences. It does not activate another document, save, close, or export automatically. Because dialogs are suppressed, payloads must report problems in their returned result rather than through `alert()`; use the passed `doc`, not `app.activeDocument`.
 
 - `RUNNING`: execution entered the wrapper; this alone does not prove healthy progress. Do not launch concurrent jobs, replace the payload, or repeatedly double-click.
 - `COMPLETE`: the function and result writing finished. Validate the returned evidence and actual page composition against the task requirements.
@@ -71,6 +71,7 @@ When an application appears stuck, distinguish script execution, modal dialogs, 
 - Compare content and inspect overset text, actual line breaks, and project specifications. Physical order is `documentOffset + 1`, the document page label is `page.name`, and left/right placement is `page.side`; do not substitute one for another. A manually typed folio may differ from the native page label.
 - `LINK_EMBEDDED` means embedded, not missing. A report with no story overset does not establish the absence of runts, widows/orphans, wrong contents-page references, low-resolution images, or cell overset.
 - JSON must escape every control character, including table marker U+0016. The supplied serializer does this.
-- Follow the current computer-use tool's completion-reporting requirements after observing the UI outcome.
+- The probe returns each frame's story ID, previous/next threaded frame, text length and an 80-character preview, not full contents. Use it to check threading and frame counts; extract full text only for a targeted range when the task needs it.
+- When the job was launched through UI automation, report completion from the observed status/result files and current UI, not from the click.
 
-The provided scripts have been syntax-checked and tested using a simulated ExtendScript host for immutable payloads, unique jobs, document-path rejection, duplicate prevention, JSON control-character handling, and preference restoration. Native application checks are still required in the actual project; the simulation does not prove page composition.
+The provided scripts have been syntax-checked and tested using a simulated ExtendScript host for immutable payloads, unique jobs, document-path rejection, duplicate prevention, JSON control-character handling, and preference restoration. The path-based document lookup, dialog suppression and preview-limited probe were added afterwards and still need a live host run. Native application checks are still required in the actual project; the simulation does not prove page composition.

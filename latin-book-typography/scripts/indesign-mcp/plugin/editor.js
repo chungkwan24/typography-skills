@@ -98,7 +98,11 @@
      // Recheck after asynchronous I/O; the user may have edited the range.
      verify(snapshot(d,s,p.start,p.length),p.baseline,r.before);
      plans.delete(p.id);r.state='applying';await persist(r);
-     verify(snapshot(d,s,p.start,p.length),p.baseline,r.before);
+     try{verify(snapshot(d,s,p.start,p.length),p.baseline,r.before);}
+     catch(e){
+      // Nothing was written yet: record an abort so a refused edit does not lock later edits and saves.
+      r.state='aborted';r.error=String(e);await persist(r);throw e;
+     }
      try {
       assign(s,p.start,r.after);d.recompose();
       verify(snapshot(d,s,p.start,p.length),p.baseline,r.after);
@@ -118,8 +122,12 @@
      const {d,s}=target(r);verify(snapshot(d,s,r.start,r.length),r.baseline,r.after);
      r.state='restoring';await persist(r);
      // Refuse to overwrite user edits that happened while the receipt was written.
+     try{verify(snapshot(d,s,r.start,r.length),r.baseline,r.after);}
+     catch(e){
+      // Nothing was restored: the applied edit stays applied and does not block other work.
+      r.state='applied';r.error=String(e);await persist(r);throw e;
+     }
      try {
-      verify(snapshot(d,s,r.start,r.length),r.baseline,r.after);
       assign(s,r.start,r.before);d.recompose();
       verify(snapshot(d,s,r.start,r.length),r.baseline,r.before);
       r.state='restored';await persist(r);

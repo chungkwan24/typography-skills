@@ -2,3 +2,6 @@
 runtime/
 plugin/config.js
 __pycache__/
+# Generated, machine-specific client fragments (absolute local paths).
+codex-config.toml
+claude-mcp.json

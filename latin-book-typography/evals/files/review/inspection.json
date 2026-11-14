@@ -1,0 +1,30 @@
+{
+  "_note": "Result of scripts/inspect_document.jsx for Harbour_Lights.indd (fictional fixture). Frame previews truncated to 80 characters.",
+  "name": "Harbour_Lights.indd",
+  "path": "/Users/demo/Books/Harbour_Lights/Harbour_Lights.indd",
+  "modified": false,
+  "version": "21.2.0.30",
+  "facingPages": true,
+  "pages": [
+    {"physical": 1, "label": "1", "side": "RIGHT_HAND", "spread": 1, "items": 1, "frames": [{"id": 201, "storyId": 301, "previousFrame": null, "nextFrame": null, "length": 34, "preview": "HARBOUR LIGHTS\rA Novel\rMara Ellison", "overflows": false}]},
+    {"physical": 2, "label": "2", "side": "LEFT_HAND", "spread": 2, "items": 0, "frames": []},
+    {"physical": 3, "label": "3", "side": "RIGHT_HAND", "spread": 2, "items": 2, "frames": [{"id": 203, "storyId": 303, "previousFrame": null, "nextFrame": null, "length": 61, "preview": "Contents\rOne: The Breakwater\t7\rTwo: Salt Year\t12\rThree: Lamps\t16", "overflows": false}, {"id": 204, "storyId": 304, "previousFrame": null, "nextFrame": null, "length": 3, "preview": "iii", "overflows": false}]},
+    {"physical": 4, "label": "4", "side": "LEFT_HAND", "spread": 3, "items": 2, "frames": [{"id": 205, "storyId": 305, "previousFrame": null, "nextFrame": null, "length": 1410, "preview": "Foreword\r  The town of Kell sits where the estuary narrows, and its lamps were lit by", "overflows": false}, {"id": 206, "storyId": 306, "previousFrame": null, "nextFrame": null, "length": 2, "preview": "iv", "overflows": false}]},
+    {"physical": 5, "label": "5", "side": "RIGHT_HAND", "spread": 3, "items": 1, "frames": [{"id": 207, "storyId": 410, "previousFrame": null, "nextFrame": 208, "length": 2290, "preview": "One\rThe Breakwater\rThe first storm of the year came in on a Tuesday, and by evening", "overflows": false}]},
+    {"physical": 6, "label": "6", "side": "LEFT_HAND", "spread": 4, "items": 1, "frames": [{"id": 208, "storyId": 410, "previousFrame": 207, "nextFrame": 209, "length": 2410, "preview": "the harbour master had already given up on the night ferry. Nell watched the", "overflows": false}]},
+    {"physical": 7, "label": "7", "side": "RIGHT_HAND", "spread": 4, "items": 1, "frames": [{"id": 209, "storyId": 410, "previousFrame": 208, "nextFrame": null, "length": 1980, "preview": "rope go taut against the bollard and counted the seconds between gusts. \"It'll ho", "overflows": false}]},
+    {"physical": 8, "label": "8", "side": "LEFT_HAND", "spread": 5, "items": 4, "frames": [
+      {"id": 210, "storyId": 411, "previousFrame": null, "nextFrame": null, "length": 92, "preview": "Two\r", "overflows": false},
+      {"id": 211, "storyId": 412, "previousFrame": null, "nextFrame": null, "length": 260, "preview": "Salt Year\r", "overflows": false},
+      {"id": 212, "storyId": 413, "previousFrame": null, "nextFrame": null, "length": 610, "preview": "Her father kept a ledger of every boat that left the slip, and in the salt year the", "overflows": false},
+      {"id": 213, "storyId": 414, "previousFrame": null, "nextFrame": null, "length": 590, "preview": "column of departures grew longer than the column of returns. She was 5'11\" by the", "overflows": false}
+    ]},
+    {"physical": 9, "label": "9", "side": "RIGHT_HAND", "spread": 5, "items": 1, "frames": [{"id": 214, "storyId": 415, "previousFrame": null, "nextFrame": null, "length": 2200, "preview": "summer she turned fifteen, taller than her brother, and the dock boys called her", "overflows": true}]},
+    {"physical": 10, "label": "10", "side": "LEFT_HAND", "spread": 6, "items": 1, "frames": [{"id": 215, "storyId": 416, "previousFrame": null, "nextFrame": null, "length": 2050, "preview": "Three\rLamps\rThe lamps along the mole were the last thing her mother had painted", "overflows": false}]}
+  ],
+  "sections": [
+    {"physical": 1, "start": 1, "continueNumbering": false, "style": "ARABIC", "prefix": ""}
+  ],
+  "oversetStories": [415],
+  "links": [{"name": "harbour_map.tif", "status": "LINK_EMBEDDED"}]
+}
