@@ -29,7 +29,7 @@
       "id": 2,
       "name": "mcp-runt-tracking-no-save",
       "prompt": "InDesign MCP 已经连好了（indesign_local）。我的论文 Thesis_Final.indd 印刷页码第 23 页，第二段最后一行只剩一个单词 results.，帮我用字距收一下。改完先别保存，我要自己看。模拟的工具返回结果在 evals/files/mcp/simulated-tool-results.md。",
-      "expected_output": "A step-by-step tool-call log with exact arguments, then a Chinese reply. Starts with get_connection_status, list_documents, and picks document id 3 'Thesis_Final.indd' (not the modified copy id 5), confirming identity. Maps printed folio 23 to physical page 37 for list_text_frames. Uses prepare_tracking_edit on a bounded range (<=128 chars) of the last line(s) with exact expected_text and a small negative tracking value, then apply_prepared_edit, then re-inspects composition/neighbours. Does not call save_document. Mentions restore_edit/transaction tx-91 is conditional restoration, not native Undo.",
+      "expected_output": "A step-by-step tool-call log with exact arguments, then a Chinese reply. Starts with get_connection_status, list_documents, and picks document id 3 'Thesis_Final.indd' (not the modified copy id 5), confirming identity. Maps printed folio 23 to physical page 37 for list_text_frames. Uses prepare_tracking_edit on a bounded range (<=128 chars) of the last line(s) with exact expected_text and a small tracking value whose reported effect matches its direction, then apply_prepared_edit, then re-inspects composition/neighbours. Does not call save_document. Mentions restore_edit/transaction tx-91 is conditional restoration, not native Undo.",
       "files": [
         "evals/files/mcp/simulated-tool-results.md"
       ],
@@ -38,7 +38,7 @@
         "Targets document id 3 'Thesis_Final.indd' (not the modified copy id 5) with matching expected_name",
         "Uses physical_page=37 for printed folio 23",
         "prepare_tracking_edit targets story 88 with length <= 128 characters inside the paragraph's last lines and supplies expected_text",
-        "Tracking value is a small adjustment (absolute value 1-30, tightening or loosening), not an extreme value",
+        "Tracking value is a small adjustment (absolute value 1-30) and the reported recomposition matches its direction (tightening pulls 'results.' up; loosening pushes a word down)",
         "Calls apply_prepared_edit with the prepared plan_id only after prepare_tracking_edit",
         "Checks the recomposed result after applying (runt gone, neighbouring lines/page 38 unchanged)",
         "Does not call save_document and tells the user the change is unsaved",
@@ -53,20 +53,64 @@
       "expected_output": "Uses the JSX route: runs scripts/prepare_indesign_job.py with scripts/inspect_document.jsx and the document path, job root under a project work directory; shows the osascript/AppleScript (do script ... language javascript) or Scripts-panel route with the generated run.jsx/launcher path but does not execute it in this dry run; does not run setup.py or try to install MCP. After reading the simulated COMPLETE result, reports chapter 3 (physical 40, label 32) on LEFT_HAND as the violation, judged by page.side not page number; chapters 1, 2, 4 pass. Proposes inserting a blank left-hand page before chapter 3 but does not change the document (only a check was requested) and notes subsequent starts/pagination/TOC need rechecking after any insertion.",
       "files": [
         "evals/files/jsx/Atlas.indd",
-        "evals/files/jsx/simulated-result.json"
+        "evals/files/jsx/simulated-result.json",
+        "evals/files/jsx/simulated-status.json"
       ],
       "assertions": [
         "Runs scripts/prepare_indesign_job.py with scripts/inspect_document.jsx and the Atlas.indd path, job root under outputs/work",
         "Does not execute osascript/AppleScript or install into the Scripts panel (marks them NOT RUN)",
         "Does not run setup.py or attempt to install/configure MCP",
-        "Reads the job status/result before reporting the check outcome",
+        "Reads the job's status (COMPLETE) and result files before reporting the check outcome",
         "Identifies Chapter 3 (physical 40, label 32) as starting on a left-hand page",
         "Reports Chapters 1, 2 and 4 as starting on right-hand pages",
         "Judges right/left by page side, explicitly not by page-number parity",
         "Also checks the title page, contents and foreword starts",
-        "Proposes inserting a blank left-hand page before Chapter 3 but makes no document change",
+        "Proposes a fix for Chapter 3 (blank left-hand page or an On Next Odd Page keep option) and notes its knock-on effect on Chapter 4, but makes no document change",
         "Notes that after an insertion later starts, pagination/sections and the table of contents must be rechecked",
         "Reply to the user is in Chinese"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "intake-one-message",
+      "prompt": "我有一本英文书稿要排版，InDesign 文件在 evals/files/intake/Field_Notes.indd。帮我排一下吧。",
+      "expected_output": "A single Chinese reply that asks every missing intake question at once (academic vs aesthetic purpose, digital PDF vs print vs both, facing pages if print, review vs edit and same file vs working copy) without inferring the purpose, treats '帮我排一下' as needing the mode confirmed rather than as blanket edit permission, makes no changes, says body specifications will be read from existing styles, and offers read-only inspection that does not depend on the answers.",
+      "files": [
+        "evals/files/intake/Field_Notes.indd"
+      ],
+      "assertions": [
+        "Reply to the user is in Chinese",
+        "All intake questions are asked together in this one reply, not deferred to later turns",
+        "Asks whether the project is academic final typesetting or an aesthetically focused layout, without inferring it",
+        "Asks whether the deliverable is a digital PDF, a printed book, or both",
+        "Raises facing pages (at least conditionally, for print)",
+        "Asks whether to edit the original file or a working copy",
+        "Does not treat the request as blanket permission to edit: confirms the mode or scope before any change",
+        "Makes no document changes and claims none",
+        "Says body specifications will be read from the document's existing styles rather than asking the user to list them all",
+        "Offers or starts read-only inspection that does not depend on the answers"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "docx-review-backend-limits",
+      "prompt": "这是我论文的 Word 稿 evals/files/docx/thesis.docx，学术出版，要印刷，双页对开。帮我检查一下排版，告诉我哪些能在 Word 里改，先别动文件。",
+      "expected_output": "A Chinese review of the .docx (no edits) that reads styles/settings from the XML and reports: Normal style left-aligned rather than justified with last line left; widow/orphan control disabled; a single decimal section starting at 1 with a typed 'iii' folio and typed contents page numbers instead of Roman front matter + Arabic body; chapters start with plain page breaks rather than odd-page section breaks; leading spaces and straight quotes, preserving 5' x 3' as a measurement. States Word's limits: no optical kerning, character spacing in points, page-level checks need a PDF exported by Word itself (LibreOffice conversion is not proof), and widows/runts/rivers cannot be verified from XML alone.",
+      "files": [
+        "evals/files/docx/thesis.docx"
+      ],
+      "assertions": [
+        "Reply to the user is in Chinese",
+        "Makes no changes to the file and claims none",
+        "Flags that body text (Normal style) is left-aligned rather than justified with the last line aligned left",
+        "Flags that widow/orphan control is disabled",
+        "Flags the single decimal numbering section and typed folio/contents numbers, and proposes Roman front-matter and Arabic body sections via section breaks",
+        "Proposes odd-page section breaks (or an equivalent) for chapter starts instead of plain page breaks",
+        "Flags the leading spaces and straight quotation marks while keeping 5' x 3' as a measurement",
+        "States that Word has no optical kerning, so the serif Optical default cannot be applied",
+        "States that Word character spacing is in points rather than 1/1000 em",
+        "Says page-level verification needs a PDF exported by Word itself, and that a LibreOffice or other conversion is not proof",
+        "Does not claim widows, runts or rivers were verified from the document XML alone"
       ]
     }
   ]
